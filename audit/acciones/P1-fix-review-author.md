@@ -206,8 +206,8 @@ Tras 1-2 semanas:
 - [x] Paso 2.4 — Verificado en HTML: `"@type":"Review"` ya no aparece
 - [x] Paso 3 — Rich Results Test de `/products/aire-acondicionado-telair-silent-3-8100h`: ✅ 10 elementos válidos, 0 errores críticos
 - [x] Paso 3b — Repetir Rich Results Test en 2 URLs adicionales: ✅ fix consistente en todas
-- [ ] Paso 4 — Solicitar reindexación de las 7 URLs en GSC
-- [ ] Paso 5 — Marcar "Validar correcciones" en GSC
+- [x] Paso 4 — Solicitar reindexación de las 7 URLs en GSC (2026-05-14)
+- [ ] Paso 5 — Marcar "Validar correcciones" en GSC (hacer en 7-14 días)
 
 ---
 
