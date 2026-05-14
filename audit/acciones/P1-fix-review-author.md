@@ -19,77 +19,128 @@
 
 ---
 
-## Causa raíz
+## Causa raíz (CONFIRMADA tras inspección del HTML)
 
-Con Judge.me instalado, hay **dos fuentes posibles** del schema `Review` sin `author`:
+**El tema Shopify genera un bloque `Review` legacy sin `author`**, usando el metafield `product.metafields.reviews.rating.value` heredado de la antigua app deprecada "Shopify Product Reviews".
 
-### Fuente A — Judge.me usando Microdata en lugar de JSON-LD
-Por defecto, Judge.me inyecta los reviews como **Microdata HTML** (no como JSON-LD). Google los lee, pero si el sitio también tiene un `Product` schema en JSON-LD del tema (Shopify Dawn y la mayoría de temas modernos lo hacen), **se produce un conflicto** y Google puede coger los Reviews "fantasma" sin `author` del Microdata.
+Bloque visible en el HTML de la página de producto actual:
 
-### Fuente B — El tema Shopify genera Review schema sin author
-Algunos temas (Dawn-based, Booster, Turbo, etc.) emiten un bloque `Product > Review` en JSON-LD pero **dejan `author` vacío** o le pasan `null` cuando hay reviews de Shopify nativas.
+```json
+"review": {
+  "@type": "Review",
+  "reviewRating": {
+    "@type": "Rating",
+    "ratingValue": "5.0"
+  }
+}
+```
 
-> En tu caso es **muy probable la Fuente A** (conflicto Judge.me Microdata ↔ Theme JSON-LD), porque los 7 productos coinciden con los que tienen mayor número de reviews en Judge.me.
+**Lo que falta**: `author`, `reviewBody`, `datePublished`. Google marca este snippet como error crítico por la ausencia de `author`.
+
+### Por qué Judge.me no es el culpable
+
+Configuración Judge.me ya verificada y correcta:
+- ✅ "Agregar fragmentos JSON-LD (predeterminado)" SELECCIONADO
+- ❌ "Agregar fragmentos de microdatos" NO seleccionado
+- ✅ "Enviar calificación promedio y número de reseñas de cada producto" (predeterminado)
+- ⓘ La opción "Avanzado" (enviar contenido individual de reviews vía JSON-LD) requiere suscripción, pero **no es necesaria** para resolver este error.
+
+### Por qué el tema sigue emitiendo el bloque legacy
+
+Cuando se instaló Judge.me, el tema **no se actualizó** y sigue leyendo el rating de los metafields antiguos (`product.metafields.reviews.rating.value`), que es donde se guardaban las valoraciones de la app legacy de Shopify. El tema construye su propio bloque `review` sin enriquecerlo con `author` ni reviewBody, y Google lo lee como roto.
+
+> **Estrategia**: eliminar el bloque `review` del tema y dejar que **solo Judge.me** gestione el schema (vía `aggregateRating` que ya emite por defecto).
 
 ---
 
 ## Solución paso a paso (15-30 minutos)
 
-### Paso 1 · Activar JSON-LD en Judge.me (CRÍTICO)
+### Paso 1 · Judge.me JSON-LD ✅ YA ACTIVO
 
-1. Entrar en **Shopify Admin → Apps → Judge.me**.
-2. Ir a **Settings → Google & SEO → SEO Rich Snippets**.
-3. ✅ Marcar la casilla **"Add JSON-LD snippets (Default)"**.
-4. En la sección **Advanced**, seleccionar:
-   - ✅ **"Push average rating, number of reviews and reviews content of each product"**
-5. Click en **Save**.
-
-> Esto hace que Judge.me deje de inyectar el Microdata roto y use JSON-LD con `author` correctamente.
+No hay nada que hacer en Judge.me. La configuración actual es la correcta:
+- "Agregar fragmentos JSON-LD (predeterminado)" ya está seleccionado.
+- La opción "Avanzado" (contenido individual de reviews) requiere suscripción pero **no es necesaria** para arreglar el error crítico — `aggregateRating` (estrellas + nº de reviews) es suficiente para el rich snippet de SERP.
 
 📚 Referencia oficial: [Displaying product ratings in Google Search Results — Judge.me Help Center](https://judge.me/help/en/articles/8409296-displaying-product-ratings-in-google-search-results)
 
 ---
 
-### Paso 2 · Verificar si el tema genera Review schema duplicado
+### Paso 2 · Eliminar el bloque `review` legacy del tema (FIX CLAVE)
 
-1. Abrir cualquiera de las 7 URLs afectadas, por ejemplo:
-   `https://evacaravan.com/products/aire-acondicionado-telair-silent-3-8100h`
-2. Ver código fuente (Ctrl+U).
-3. Buscar `"@type":"Product"` y `"review"` o `"@type":"Review"` en el HTML.
-4. **Contar cuántos JSON-LD diferentes hay con `Review`**:
-   - Si hay **1 solo** (de Judge.me) → terminó, solo testear (Paso 3).
-   - Si hay **2 o más** → ir al Paso 2b para eliminar el del tema.
+**Antes de tocar nada: duplicar el tema** como rollback:
 
-#### Paso 2b · Eliminar Review schema del tema (si hay duplicado)
+1. Shopify Admin → **Online Store → Themes**.
+2. En el tema activo (el primero de la lista) → menú `…` → **Duplicate**. Esto crea una copia "Copy of [tu tema]" como backup.
+3. Sobre el tema activo (el original) → menú `…` → **Edit code**.
 
-En Shopify Admin → **Sales channels → Online Store → Themes → Customize → Edit code**:
+#### 2.1 · Localizar el archivo con el JSON-LD legacy
 
-1. Buscar en `snippets/`:
-   - `product-schema.liquid`
-   - `product-json-ld.liquid`
-   - `seo-schema-product.liquid`
-   - `structured-data-product.liquid`
-   - O similar (depende del tema)
+En la barra de búsqueda izquierda del editor de código, buscar (una a una) en `snippets/`:
 
-2. Dentro del archivo, buscar el bloque que comienza con `"review":` o `"@type": "Review"` y comentarlo o eliminarlo. Ejemplo del bloque a eliminar:
+- `product-schema.liquid`
+- `structured-data.liquid`
+- `structured-data-product.liquid`
+- `product-json-ld.liquid`
+- `seo-product.liquid`
+- `seo-schema-product.liquid`
 
-   ```liquid
-   {% if product.metafields.reviews.rating.value != blank %}
-   ,"review": {
-     "@type": "Review",
-     "reviewRating": {
-       "@type": "Rating",
-       "ratingValue": "{{ product.metafields.reviews.rating.value }}"
-     }
-     {% comment %} ← falta "author" aquí, ese es el problema {% endcomment %}
-   }
-   {% endif %}
-   ```
+Si no aparece ninguno, probar también en `sections/`:
+- `main-product.liquid`
+- `product-template.liquid`
 
-3. Eliminar este bloque para que **solo Judge.me genere el Review schema**.
-4. **Guardar** los cambios.
+**Atajo más rápido**: en cualquier archivo del editor, pulsar `Ctrl+Shift+F` (búsqueda global en todo el tema) y buscar el texto exacto:
 
-> ⚠️ Antes de editar el tema, duplicarlo: **Online Store → Themes → … → Duplicate** (rollback fácil).
+```
+product.metafields.reviews.rating
+```
+
+Eso te lleva directamente al archivo y la línea donde está el bloque.
+
+#### 2.2 · Editar el bloque
+
+Una vez localizado, el código se ve así (puede variar ligeramente):
+
+```liquid
+{% if product.metafields.reviews.rating.value != blank %}
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.reviews.rating.value }}",
+    "reviewCount": "{{ product.metafields.reviews.rating_count }}"
+  }
+  ,"review": {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "{{ product.metafields.reviews.rating.value }}"
+    }
+  }
+{% endif %}
+```
+
+**Eliminar SOLAMENTE el bloque `"review": { … }`** (junto con la coma que lo precede), dejando el `aggregateRating` si está presente. Quedaría así:
+
+```liquid
+{% if product.metafields.reviews.rating.value != blank %}
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.reviews.rating.value }}",
+    "reviewCount": "{{ product.metafields.reviews.rating_count }}"
+  }
+{% endif %}
+```
+
+> Si el archivo NO tiene `aggregateRating` (solo `review`), entonces elimina todo el `{% if %}…{% endif %}` completo. Judge.me ya emite su propio `aggregateRating` desde su JSON-LD.
+
+#### 2.3 · Guardar
+
+Pulsar **Save** arriba a la derecha. Shopify aplica el cambio inmediatamente.
+
+#### 2.4 · Confirmar en producción
+
+1. Abrir de nuevo `https://evacaravan.com/products/aire-acondicionado-telair-silent-3-8100h`.
+2. `Ctrl+U` (ver código fuente) → buscar `"@type":"Review"`.
+3. ✅ El bloque debe haber desaparecido por completo.
+4. ✅ Si Judge.me funciona, verás un bloque `"aggregateRating":{…}` separado (en su propio `<script type="application/ld+json">`).
 
 ---
 
@@ -147,11 +198,14 @@ Tras 1-2 semanas:
 
 ## Estado de ejecución
 
-- [ ] Paso 1 — Activar JSON-LD en Judge.me
-- [ ] Paso 2 — Verificar duplicación de schema (ver código fuente)
-- [ ] Paso 2b — Eliminar Review del tema (solo si hay duplicado)
+- [x] Paso 1 — Judge.me JSON-LD ya activo (verificado en panel)
+- [x] Diagnóstico — confirmado bloque `review` legacy del tema sin `author` (2026-05-14)
+- [ ] Paso 2.1 — Localizar archivo del tema con `product.metafields.reviews.rating`
+- [ ] Paso 2.2 — Eliminar bloque `"review":{…}` del JSON-LD
+- [ ] Paso 2.3 — Guardar y duplicar tema como backup
+- [ ] Paso 2.4 — Verificar que el bloque `Review` ya no aparece en el HTML
 - [ ] Paso 3 — Validar con Rich Results Test
-- [ ] Paso 4 — Solicitar reindexación de las 7 URLs
+- [ ] Paso 4 — Solicitar reindexación de las 7 URLs en GSC
 - [ ] Paso 5 — Marcar "Validar correcciones" en GSC
 
 ---
