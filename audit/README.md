@@ -19,6 +19,7 @@
 | [`06-feed-shopping.md`](./06-feed-shopping.md) | Análisis del feed de productos (TSV de Merchant) |
 | [`07-enlaces-externos.md`](./07-enlaces-externos.md) | Perfil de backlinks |
 | [`08-plan-accion-priorizado.md`](./08-plan-accion-priorizado.md) | **Roadmap priorizado (urgencia × impacto)** |
+| [`acciones/`](./acciones/) | **Registro de progreso por tarea (P1-P22)** |
 | [`data/`](./data/) | CSV de URLs/consultas problemáticas para ejecución |
 
 ---
