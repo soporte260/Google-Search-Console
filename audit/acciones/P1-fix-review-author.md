@@ -204,9 +204,37 @@ Tras 1-2 semanas:
 - [x] Paso 2.2 — Eliminado bloque `"review":{…}` del JSON-LD — solo queda `aggregateRating`
 - [x] Paso 2.3 — Tema duplicado como backup antes de editar
 - [x] Paso 2.4 — Verificado en HTML: `"@type":"Review"` ya no aparece
-- [ ] Paso 3 — Validar con Rich Results Test (pendiente)
+- [x] Paso 3 — Rich Results Test de `/products/aire-acondicionado-telair-silent-3-8100h`: ✅ 10 elementos válidos, 0 errores críticos
+- [ ] Paso 3b — Repetir Rich Results Test en 2 URLs más para confirmar consistencia
 - [ ] Paso 4 — Solicitar reindexación de las 7 URLs en GSC
 - [ ] Paso 5 — Marcar "Validar correcciones" en GSC
+
+---
+
+## Resultado Rich Results Test (2026-05-14)
+
+URL probada: `https://evacaravan.com/products/aire-acondicionado-telair-silent-3-8100h`
+
+**✅ 10 elementos válidos detectados · 0 errores críticos**
+
+Schemas detectados como válidos:
+- Fragmentos de productos (×2)
+- Fichas de comerciantes (×2)
+- Rutas de exploración (×2)
+- Organización (×1)
+- Políticas de devoluciones (×1)
+- Fragmentos de reseñas (×2)
+
+**Problemas no críticos restantes** (ya cubiertos por otras tareas del plan):
+
+| Campo faltante | Pertenece a |
+|---|---|
+| `priceValidUntil` (1) | P14 |
+| `shippingDetails` (2) | P5 |
+| `hasMerchantReturnPolicy` (2) | P5 |
+| `description` en hasVariant (1) | P5 (subtarea) |
+
+El error crítico original "Falta el campo `author`" en Review snippets **ha desaparecido**.
 
 ---
 
