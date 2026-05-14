@@ -200,11 +200,11 @@ Tras 1-2 semanas:
 
 - [x] Paso 1 — Judge.me JSON-LD ya activo (verificado en panel)
 - [x] Diagnóstico — confirmado bloque `review` legacy del tema sin `author` (2026-05-14)
-- [ ] Paso 2.1 — Localizar archivo del tema con `product.metafields.reviews.rating`
-- [ ] Paso 2.2 — Eliminar bloque `"review":{…}` del JSON-LD
-- [ ] Paso 2.3 — Guardar y duplicar tema como backup
-- [ ] Paso 2.4 — Verificar que el bloque `Review` ya no aparece en el HTML
-- [ ] Paso 3 — Validar con Rich Results Test
+- [x] Paso 2.1 — Localizado en `snippets/structured-data.liquid`
+- [x] Paso 2.2 — Eliminado bloque `"review":{…}` del JSON-LD — solo queda `aggregateRating`
+- [x] Paso 2.3 — Tema duplicado como backup antes de editar
+- [x] Paso 2.4 — Verificado en HTML: `"@type":"Review"` ya no aparece
+- [ ] Paso 3 — Validar con Rich Results Test (pendiente)
 - [ ] Paso 4 — Solicitar reindexación de las 7 URLs en GSC
 - [ ] Paso 5 — Marcar "Validar correcciones" en GSC
 
