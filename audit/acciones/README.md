@@ -17,7 +17,7 @@ Ejemplos:
 
 | # | Tarea | Issue | Estado | Doc |
 |---|---|---|---|---|
-| P1 | Fix Review snippets sin `author` (7 productos) | [#1](https://github.com/soporte260/Google-Search-Console/issues/1) | 📝 Documentada — pendiente ejecución | [P1-fix-review-author.md](./P1-fix-review-author.md) |
+| P1 | Fix Review snippets sin `author` (7 productos) | [#1](https://github.com/soporte260/Google-Search-Console/issues/1) | ✅ Fix aplicado — validar GSC el 2026-05-29 | [P1-fix-review-author.md](./P1-fix-review-author.md) |
 | P2 | Resolver duplicación HTTP/www vs HTTPS | [#2](https://github.com/soporte260/Google-Search-Console/issues/2) | ⏸ Pendiente | — |
 | P3 | Limpiar sitemap.xml (24 URLs 404) | [#3](https://github.com/soporte260/Google-Search-Console/issues/3) | ⏸ Pendiente | — |
 | P4 | Eliminar hreflang fantasma | [#4](https://github.com/soporte260/Google-Search-Console/issues/4) | ⏸ Pendiente | — |
