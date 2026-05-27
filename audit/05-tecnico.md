@@ -5,11 +5,11 @@
 
 ---
 
-## 5.1 Duplicación HTTP/www vs HTTPS (P2 — CRÍTICO)
+## 5.1 Duplicación HTTP/www vs HTTPS (P2 — ✅ VERIFICADO RESUELTO — 27 mayo 2026)
 
 ### Diagnóstico
 
-GSC registra **dos versiones de la home** con métricas completamente separadas:
+GSC registra **dos versiones de la home** con métricas completamente separadas (datos Feb–May 2026):
 
 | URL | Clics | Impresiones | CTR | Posición |
 |-----|-------|-------------|-----|----------|
@@ -17,47 +17,49 @@ GSC registra **dos versiones de la home** con métricas completamente separadas:
 | `http://www.evacaravan.com/` | 156 | 4.273 | 3,65% | **6,48** |
 | **TOTAL POTENCIAL** | **562** | **8.458** | — | — |
 
-La versión HTTP/www tiene **mejor posición** (6,48 vs 25,37) por backlinks históricos acumulados, pero su CTR es bajo (3,65%) porque no es HTTPS. Si se consolidan correctamente, la versión canónica heredaría toda la autoridad.
+La versión HTTP/www tiene **mejor posición** (6,48 vs 25,37) por backlinks históricos acumulados. Al consolidar, la versión canónica heredará toda la autoridad.
 
-**Impacto económico**: 156 clics mensuales perdidos + la posición 6,48 que podría aplicarse a la URL canónica.
+**Impacto económico estimado**: +156 clics trimestrales + mejora de posición media hacia <15.
 
-### Causa raíz
+### Verificación realizada el 27/05/2026
 
-Shopify Markets/Domains no tiene configurada la redirección 301 de todas las variantes a la URL canónica. El dominio primario (`https://evacaravan.com/`) no redirige automáticamente `http://` ni `www`.
-
-### Fix — Pasos en Shopify Admin
-
-1. **Ir a**: Shopify Admin → Configuración → Dominios
-2. **Verificar** que `evacaravan.com` (sin www, HTTPS) está marcado como dominio primario
-3. **Activar** la opción "Redirigir todo el tráfico a este dominio" si no está activa
-4. **Verificar** que las siguientes redirecciones funcionan (usar `curl -I`):
-   ```
-   http://evacaravan.com/          → 301 → https://evacaravan.com/
-   http://www.evacaravan.com/      → 301 → https://evacaravan.com/
-   https://www.evacaravan.com/     → 301 → https://evacaravan.com/
-   ```
-5. **Verificar canonical** en el `<head>` de la home:
-   ```html
-   <link rel="canonical" href="https://evacaravan.com/" />
-   ```
-6. **Solicitar reindexación** de `https://evacaravan.com/` en GSC → Inspección de URL → Solicitar indexación
-7. **Monitorizar** en GSC: la URL `http://www.evacaravan.com/` debe desaparecer del informe de páginas en 4–8 semanas
-
-### Verificación con curl
-
-```bash
-# Debe devolver 301 → https://evacaravan.com/
-curl -sI http://www.evacaravan.com/ | grep -E "HTTP|Location"
-
-# Debe devolver 200 con canonical correcto
-curl -s https://evacaravan.com/ | grep -i canonical
+**Redirección** (verificada con navegador incógnito y httpstatus.io):
 ```
+http://www.evacaravan.com/  →  301  →  https://www.evacaravan.com/  →  301  →  https://evacaravan.com/
+```
+✅ Cadena completa de 301 funciona correctamente. El 403 que devuelven checkers externos es falso positivo (bloqueo bot por Shopify/Cloudflare); en navegador real la cadena es correcta.
 
-### KPI objetivo
+**Canonical tag** (verificado en código fuente de `https://evacaravan.com/`):
+```html
+<link rel="canonical" href="https://evacaravan.com/" />
+```
+✅ Correcto. Controlado por **Yoast SEO for Shopify** (el tema nativo tiene el canonical desactivado con `disabled_by_yoast_seo`).
 
-- GSC páginas: `http://www.evacaravan.com/` desaparece del informe
-- Clics consolidados en `https://evacaravan.com/`: >500/trim (suma de ambas versiones)
-- Posición media home: mejora hacia <15 al heredar autoridad de la versión www
+**Configuración Shopify Admin → Dominios** (verificada):
+- Dominio principal: `evacaravan.com` ✅
+- `www.evacaravan.com` → Tipo: "Redirige a evacaravan.com" ✅
+- `eva-caravan.myshopify.com` → Tipo: "Redirige a evacaravan.com" ✅
+- Certificado TLS provisionado en todos los dominios ✅
+
+### Causa raíz real
+
+La infraestructura técnica estaba correctamente configurada. El problema era únicamente que Google tenía **indexada y en caché la URL `http://www.evacaravan.com/`** con autoridad de backlinks históricos. No se requería ningún cambio técnico.
+
+### Único paso pendiente
+
+**Solicitar reindexación en GSC** (acción manual, ~2 minutos):
+
+1. Ir a GSC → Herramienta de inspección de URLs
+2. Introducir `https://evacaravan.com/`
+3. Clic en **"Solicitar indexación"**
+4. Opcionalmente, inspeccionar también `http://www.evacaravan.com/` para ver su estado actual
+
+### Monitorización
+
+- **Plazo esperado**: 4–8 semanas para que Google consolide ambas URLs
+- **KPI**: `http://www.evacaravan.com/` desaparece del informe de páginas en GSC
+- **KPI**: Clics consolidados en `https://evacaravan.com/` superan 500/trim
+- **KPI**: Posición media home mejora hacia <15 al heredar autoridad de la versión www
 
 ---
 
