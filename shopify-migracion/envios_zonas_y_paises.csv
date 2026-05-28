@@ -1,0 +1,11 @@
+﻿ZONA_SHOPIFY,MERCADO,PAISES,TARIFA,MODELO_HIBRIDO
+ES_PENINSULA,Principal (raiz),Espana peninsular,GLS Economy RestoES,Incluido (gratis)
+ES_BALEARES,Principal,Baleares,GLS Economy Baleares,Diferencia vs peninsula
+PT,Principal,Portugal,GLS Economy Portugal,Diferencia vs peninsula
+DE,/de,Alemania (+Austria*),UPS Std DE-FR-IT,Incluido; *AT diferencia
+FR,/fr,"Francia, Monaco",UPS Std DE-FR-IT,Incluido (gratis)
+IT,/it,Italia,UPS Std DE-FR-IT,Incluido (gratis)
+BX,/bx,"Belgica, Paises Bajos, Luxemburgo",UPS Std Benelux,Incluido (gratis)
+EU_POL_CZ,/eu,"Polonia, Chequia, Eslovaquia, Eslovenia, Hungria, Croacia, Estonia, Letonia, Lituania, Bulgaria, Grecia, Rumania",UPS Std Polonia-Chequia,Real en checkout
+EU_SE_AT_IE,/eu,"Suecia, Irlanda, Finlandia, Dinamarca, Austria",UPS Std Suecia-Austria-Irlanda,Real en checkout
+EU_BENELUX,/eu (si Benelux no es mercado propio),Benelux,UPS Std Benelux,Real en checkout
