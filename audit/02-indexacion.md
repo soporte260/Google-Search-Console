@@ -33,12 +33,16 @@ Google unifica estas variantes con la versión `es-default`.
 
 ---
 
-## 2.3 Sitemap.xml con URLs en 404 (24 URLs) {#2.3}
+## 2.3 Sitemap.xml con URLs en 404 ✅ RESUELTO {#2.3}
 
 **Archivo:** `audit/data/404-sitemap-urls.csv`
+**Validación Google:** 2026-06-01 — 4 páginas validadas como corregidas. 0 URLs en 404 en el sitemap.
 
-Google reporta 24 URLs del `sitemap.xml` que devuelven 404. Esto reduce la
-fiabilidad del sitemap y baja el ratio de indexación.
+> **Datos de seguimiento:** `evacaravan.com-Coverage-Drilldown-404-2026-06-01.xlsx`
+> Tendencia: pico 36 URLs (2026-04-14) → 6 (2026-05-16) → 2 (2026-05-23) → **0 (2026-05-26)**
+
+~~Google reporta 24 URLs del `sitemap.xml` que devuelven 404. Esto reduce la
+fiabilidad del sitemap y baja el ratio de indexación.~~
 
 ### URLs confirmadas en sitemap con 404 (muestra del export GSC)
 

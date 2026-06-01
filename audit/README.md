@@ -61,8 +61,8 @@
 |---|---|---|
 | P1 | Fix Review snippets sin `author` | ✅ Cerrado |
 | P2 | Resolver duplicación HTTP/www vs HTTPS | ✅ Cerrado |
-| P3 | Limpiar sitemap de 24 URLs en 404 | 🔄 En progreso |
-| P4 | Eliminar hreflang fantasma en-XX | ⏳ Pendiente |
+| P3 | Limpiar sitemap de 24 URLs en 404 | ✅ Validado por Google (2026-06-01) |
+| P4 | Eliminar hreflang fantasma en-XX | 🔄 Análisis completado — pendiente ejecución en Shopify |
 | P5 | shippingDetails + hasMerchantReturnPolicy | ⏳ Pendiente |
 | P6 | Landing cerraduras para furgonetas | ⏳ Pendiente |
 | P7 | Traducir páginas DE/FR con más impresiones | ⏳ Pendiente |
